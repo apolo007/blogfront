@@ -12,6 +12,7 @@ const Breadcrumb = styled.span`
 
 const Breadcrumbs = ({ post }) => {
   const { slug } = useParams();
+  console.log(slug);  
 
   return (
     <Nav>
