@@ -15,24 +15,24 @@ const Card = styled.div`
 
 const CardImage = styled.img`
   width: 100%;
-  height: ${(props) => (props.compact ? '120px' : '200px')};
+  height: ${(props) => (props.compact ? '120px' : '180px')};
   object-fit: cover;
 `;
 
 const CardContent = styled.div`
-  padding: ${(props) => (props.compact ? '12px' : '20px')};
+  padding: ${(props) => (props.compact ? '12px' : '15px')};
 `;
 
 const CardTitle = styled.h3`
-  font-size: ${(props) => (props.compact ? '1.1rem' : '1.4rem')};
+  font-size: ${(props) => (props.compact ? '1.1rem' : '1.3rem')};
   color: ${(props) => props.theme.colors.text};
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 `;
 
 const CardExcerpt = styled.p`
   font-size: ${(props) => (props.compact ? '0.9rem' : '1rem')};
-  color: #4a5568; /* Gray for readability */
-  margin-bottom: 12px;
+  color: #4a5568;
+  margin-bottom: 10px;
 `;
 
 const CardLink = styled(Link)`

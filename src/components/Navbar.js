@@ -15,7 +15,7 @@ const Nav = styled.nav`
 `;
 
 const Logo = styled(Link)`
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   font-weight: 700;
   text-decoration: none;
   color: ${(props) => props.theme.colors.primary};
@@ -31,7 +31,6 @@ const StyledLink = styled(Link)`
   color: ${(props) => props.theme.colors.text};
   font-weight: 500;
   font-size: 1rem;
-  padding: 5px 10px;
   transition: color 0.3s;
   &:hover {
     color: ${(props) => props.theme.colors.accent};

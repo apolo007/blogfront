@@ -16,13 +16,13 @@ const Container = styled.div`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 30px;
-  margin-top: 30px;
+  gap: 25px;
+  margin-top: 25px;
 `;
 
 const PostGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 `;
 
@@ -30,9 +30,9 @@ const Sidebar = styled.aside`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   color: ${(props) => props.theme.colors.primary};
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-weight: 700;
 `;
 
@@ -65,13 +65,13 @@ const Home = () => {
       <Slider posts={posts.slice(0, 5)} />
       <Grid>
         <div>
-          <SectionTitle>Recent Articles</SectionTitle>
+          <SectionTitle>Latest Posts</SectionTitle>
           <InfiniteScroll
             dataLength={posts.length}
             next={loadPosts}
             hasMore={hasMore}
             loader={<h4 style={{ textAlign: 'center', padding: '20px', color: '#2c5282' }}>Loading...</h4>}
-            endMessage={<p style={{ textAlign: 'center', padding: '20px', color: '#2c5282' }}>No more articles.</p>}
+            endMessage={<p style={{ textAlign: 'center', padding: '20px', color: '#2c5282' }}>No more posts.</p>}
           >
             <PostGrid>
               {posts.map((post) => (
@@ -81,7 +81,7 @@ const Home = () => {
           </InfiniteScroll>
         </div>
         <Sidebar>
-          <SectionTitle>Random Reads</SectionTitle>
+          <SectionTitle>Random Posts</SectionTitle>
           {randomPosts.map((post) => (
             <PostCard key={post._id} post={post} compact />
           ))}

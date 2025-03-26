@@ -3,37 +3,37 @@ import styled from 'styled-components';
 import { subscribeNewsletter } from '../utils/api';
 
 const NewsletterSection = styled.div`
-  margin-top: 30px;
-  padding: 25px;
+  margin-top: 25px;
+  padding: 20px;
   background: ${(props) => props.theme.colors.secondary};
   border-radius: 8px;
   text-align: center;
 `;
 
 const Title = styled.h3`
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: ${(props) => props.theme.colors.primary};
   margin-bottom: 10px;
 `;
 
 const Description = styled.p`
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: ${(props) => props.theme.colors.text};
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 `;
 
 const Form = styled.form`
   display: flex;
-  gap: 15px;
+  gap: 10px;
   justify-content: center;
 `;
 
 const Input = styled.input`
-  padding: 12px;
-  width: 250px;
+  padding: 10px;
+  width: 220px;
   border: 1px solid ${(props) => props.theme.colors.secondary};
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   &:focus {
     border-color: ${(props) => props.theme.colors.accent};
     outline: none;
@@ -41,7 +41,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 12px 25px;
+  padding: 10px 20px;
   background: ${(props) => props.theme.colors.primary};
   color: #fff;
   border: none;
@@ -71,19 +71,19 @@ const Newsletter = () => {
 
   return (
     <NewsletterSection>
-      <Title>Subscribe to Our Newsletter</Title>
-      <Description>Stay updated with the latest insights and trends.</Description>
+      <Title>Subscribe Now</Title>
+      <Description>Get the latest updates directly in your inbox.</Description>
       <Form onSubmit={handleSubmit}>
         <Input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Enter your email"
+          placeholder="Your Email"
           required
         />
-        <Button type="submit">Subscribe</Button>
+        <Button type="submit">Join</Button>
       </Form>
-      {message && <p style={{ marginTop: '15px', color: '#4a5568' }}>{message}</p>}
+      {message && <p style={{ marginTop: '10px', color: '#4a5568' }}>{message}</p>}
     </NewsletterSection>
   );
 };
