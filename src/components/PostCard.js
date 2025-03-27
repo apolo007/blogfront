@@ -5,47 +5,47 @@ import styled from 'styled-components';
 const Card = styled.div`
   background: ${(props) => props.theme.colors.background};
   border: 1px solid ${(props) => props.theme.colors.secondary};
-  border-radius: 12px; /* Slightly larger radius for modern look */
+  border-radius: 12px;
   overflow: hidden;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 100%; /* Full width within grid */
-  max-width: 320px; /* Fixed max-width for consistency */
-  margin: 0 auto; /* Center in grid cell */
+  width: 100%;
+  max-width: ${(props) => (props.compact ? '280px' : '320px')}; /* Compact ke liye smaller */
+  margin: 0 auto;
   &:hover {
-    transform: translateY(-5px); /* Slight lift on hover */
+    transform: translateY(-5px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   }
 `;
 
 const CardImage = styled.img`
   width: 100%;
-  height: 160px; /* Fixed height for homepage */
+  height: ${(props) => (props.compact ? '120px' : '160px')}; /* Compact: 120px, Normal: 160px */
   object-fit: cover;
   display: block;
 `;
 
 const CardContent = styled.div`
-  padding: 16px; /* Consistent padding */
+  padding: ${(props) => (props.compact ? '12px' : '16px')};
 `;
 
 const CardTitle = styled.h3`
-  font-size: 1.25rem; /* Slightly larger for readability */
+  font-size: ${(props) => (props.compact ? '1.1rem' : '1.25rem')};
   color: ${(props) => props.theme.colors.text};
   margin-bottom: 8px;
   line-height: 1.4;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
 
 const CardExcerpt = styled.p`
-  font-size: 0.95rem; /* Slightly smaller for balance */
-  color: #6b7280; /* Softer gray for contrast */
+  font-size: ${(props) => (props.compact ? '0.9rem' : '0.95rem')};
+  color: #6b7280;
   margin-bottom: 12px;
   line-height: 1.5;
   display: -webkit-box;
-  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-line-clamp: ${(props) => (props.compact ? 2 : 3)};
   -webkit-box-orient: vertical;
   overflow: hidden;
 `;
@@ -62,12 +62,15 @@ const CardLink = styled(Link)`
   }
 `;
 
-const PostCard = ({ post }) => (
-  <Card>
-    {post.imageUrl && <CardImage src={post.imageUrl} alt={post.title} />}
-    <CardContent>
-      <CardTitle>{post.title}</CardTitle>
-      <CardExcerpt dangerouslySetInnerHTML={{ __html: post.content.substring(0, 150) + '...' }} />
+const PostCard = ({ post, compact = false }) => (
+  <Card compact={compact}>
+    {post.imageUrl && <CardImage src={post.imageUrl} alt={post.title} compact={compact} />}
+    <CardContent compact={compact}>
+      <CardTitle compact={compact}>{post.title}</CardTitle>
+      <CardExcerpt
+        compact={compact}
+        dangerouslySetInnerHTML={{ __html: post.content.substring(0, compact ? 100 : 150) + '...' }}
+      />
       <CardLink to={`/post/${post.slug}`}>Read More</CardLink>
     </CardContent>
   </Card>

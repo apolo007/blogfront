@@ -34,15 +34,16 @@ const LoadingText = styled.h4`
 
 const PostGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
 `;
 
 const CategoryPage = () => {
   const { slug } = useParams();
   const [posts, setPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(1); // Page 1 se start
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
   const categoryNames = {
@@ -55,21 +56,25 @@ const CategoryPage = () => {
 
   const loadPosts = async (isInitial = false) => {
     try {
-      console.log('Fetching posts for slug:', slug);
-      const data = await fetchCategoryPosts(slug);
-      console.log('Fetched data:', data);
-      const paginated = data.slice((page - 1) * 10, page * 10); // Page 1: 0-10, Page 2: 10-20
-      console.log('Paginated posts:', paginated);
-      
       if (isInitial) {
-        setPosts(paginated); // Initial load ke liye direct set
+        console.log('Fetching posts for slug:', slug);
+        const data = await fetchCategoryPosts(slug);
+        console.log('Fetched data:', data);
+        setAllPosts(data);
+        const paginated = data.slice(0, 10);
+        console.log('Paginated posts (Page 1):', paginated);
+        setPosts(paginated);
+        setPage(2);
+        setHasMore(data.length > 10);
       } else {
-        setPosts((prev) => [...prev, ...paginated]); // Infinite scroll ke liye append
-      }
-      
-      setPage((prevPage) => prevPage + 1);
-      if (paginated.length < 10 || data.length <= posts.length + paginated.length) {
-        setHasMore(false);
+        const startIndex = (page - 1) * 10;
+        const paginated = allPosts.slice(startIndex, startIndex + 10);
+        console.log(`Paginated posts (Page ${page}):`, paginated);
+        setPosts((prev) => [...prev, ...paginated]);
+        setPage(page + 1);
+        if (startIndex + paginated.length >= allPosts.length) {
+          setHasMore(false);
+        }
       }
     } catch (err) {
       console.error('Error fetching posts:', err);
@@ -81,6 +86,7 @@ const CategoryPage = () => {
   useEffect(() => {
     console.log('useEffect triggered with slug:', slug);
     setPosts([]);
+    setAllPosts([]);
     setPage(1);
     setHasMore(true);
     setLoading(true);
@@ -93,14 +99,14 @@ const CategoryPage = () => {
         <SectionTitle>{categoryNames[slug]}</SectionTitle>
         <IntroText>Explore the best content related to {categoryNames[slug]} to grow your digital presence.</IntroText>
       </Intro>
-      {loading ? (
+      {loading && posts.length === 0 ? (
         <LoadingText>Loading...</LoadingText>
       ) : posts.length === 0 ? (
         <LoadingText>No posts found for this category.</LoadingText>
       ) : (
         <InfiniteScroll
           dataLength={posts.length}
-          next={() => loadPosts(false)} // Infinite scroll ke liye
+          next={() => loadPosts(false)} // Scroll load
           hasMore={hasMore}
           loader={<LoadingText>Loading more...</LoadingText>}
           endMessage={<p>No more posts</p>}
@@ -111,6 +117,11 @@ const CategoryPage = () => {
             ))}
           </PostGrid>
         </InfiniteScroll>
+      )}
+      {allPosts.length > 0 && (
+        <p style={{ textAlign: 'center', marginTop: '20px' }}>
+          Showing {posts.length} of {allPosts.length} posts
+        </p>
       )}
     </Container>
   );

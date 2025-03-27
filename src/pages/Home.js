@@ -9,89 +9,149 @@ import Newsletter from '../components/Newsletter';
 const Container = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 24px;
   background: ${(props) => props.theme.colors.background};
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 25px;
-  margin-top: 25px;
+  gap: 32px;
+  margin-top: 32px;
 `;
 
 const PostGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
 `;
 
 const Sidebar = styled.aside`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   color: ${(props) => props.theme.colors.primary};
-  margin-bottom: 15px;
+  margin-bottom: 16px;
   font-weight: 700;
+`;
+
+const LoaderText = styled.h4`
+  text-align: center;
+  padding: 20px;
+  color: ${(props) => props.theme.colors.primary};
 `;
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([]); // Store all fetched posts once
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  const loadPosts = async () => {
-    try {
-      const data = await fetchPosts();
-      const paginated = data.slice((page - 1) * 10, page * 10);
+  const loadPosts = () => {
+    if (page === 1) {
+      // Fetch data only once on first load
+      fetchPosts()
+        .then((data) => {
+          console.log('Fetched data:', data);
+          setAllPosts(data); // Store all posts
+          const paginated = data.slice(0, 10); // First 10 posts
+          console.log('Paginated posts (Page 1):', paginated);
+          setPosts(paginated);
+          setPage(2);
+          setLoading(false);
+          setHasMore(data.length > 10); // Check if more posts exist
+        })
+        .catch((err) => {
+          console.error('Error fetching posts:', err);
+          setLoading(false);
+        });
+    } else {
+      // Load next page from allPosts
+      const startIndex = (page - 1) * 10;
+      const paginated = allPosts.slice(startIndex, startIndex + 10);
+      console.log(`Paginated posts (Page ${page}):`, paginated);
       setPosts((prev) => [...prev, ...paginated]);
       setPage(page + 1);
-      if (paginated.length < 10) setHasMore(false);
-    } catch (err) {
-      console.error(err);
+      if (startIndex + paginated.length >= allPosts.length) {
+        setHasMore(false);
+      }
     }
   };
 
   useEffect(() => {
+    setPosts([]);
+    setAllPosts([]);
+    setPage(1);
+    setHasMore(true);
+    setLoading(true);
     loadPosts();
   }, []);
 
-  const randomPosts = posts.sort(() => 0.5 - Math.random()).slice(0, 5);
-  const popularPosts = [...posts].sort((a, b) => b.views + b.likes - (a.views + a.likes)).slice(0, 5);
+  const getRandomPosts = () => {
+    const shuffled = [...allPosts].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, Math.min(5, shuffled.length));
+  };
+
+  const getPopularPosts = () => {
+    const sorted = [...allPosts].sort((a, b) => b.views + b.likes - (a.views + a.likes));
+    return sorted.slice(0, Math.min(5, sorted.length));
+  };
+
+  const randomPosts = getRandomPosts();
+  const popularPosts = getPopularPosts();
 
   return (
     <Container>
-      <Slider posts={posts.slice(0, 5)} />
-      <Grid>
-        <div>
-          <SectionTitle>Latest Posts</SectionTitle>
-          <InfiniteScroll
-            dataLength={posts.length}
-            next={loadPosts}
-            hasMore={hasMore}
-            loader={<h4 style={{ textAlign: 'center', padding: '20px', color: '#2c5282' }}>Loading...</h4>}
-            endMessage={<p style={{ textAlign: 'center', padding: '20px', color: '#2c5282' }}>No more posts.</p>}
-          >
-            <PostGrid>
-              {posts.map((post) => (
-                <PostCard key={post._id} post={post} />
-              ))}
-            </PostGrid>
-          </InfiniteScroll>
-        </div>
-        <Sidebar>
-          <SectionTitle>Random Posts</SectionTitle>
-          {randomPosts.map((post) => (
-            <PostCard key={post._id} post={post} compact />
-          ))}
-          <SectionTitle>Popular Posts</SectionTitle>
-          {popularPosts.map((post) => (
-            <PostCard key={post._id} post={post} compact />
-          ))}
-          <Newsletter />
-        </Sidebar>
-      </Grid>
+      {loading && posts.length === 0 ? (
+        <LoaderText>Loading...</LoaderText>
+      ) : (
+        <>
+          <Slider posts={allPosts.slice(0, 5)} />
+          <Grid>
+            <div>
+              <SectionTitle>Latest Posts</SectionTitle>
+              <InfiniteScroll
+                dataLength={posts.length}
+                next={loadPosts}
+                hasMore={hasMore}
+                loader={<LoaderText>Loading more...</LoaderText>}
+                endMessage={<LoaderText>No more posts.</LoaderText>}
+              >
+                <PostGrid>
+                  {posts.map((post) => (
+                    <PostCard key={post._id} post={post} />
+                  ))}
+                </PostGrid>
+              </InfiniteScroll>
+            </div>
+            <Sidebar>
+              <div>
+                <SectionTitle>Random Posts</SectionTitle>
+                {randomPosts.map((post) => (
+                  <PostCard key={post._id} post={post} compact />
+                ))}
+              </div>
+              <div>
+                <SectionTitle>Popular Posts</SectionTitle>
+                {popularPosts.map((post) => (
+                  <PostCard key={post._id} post={post} compact />
+                ))}
+              </div>
+              <Newsletter />
+            </Sidebar>
+          </Grid>
+          {allPosts.length > 0 && (
+            <p style={{ textAlign: 'center', marginTop: '20px' }}>
+              Showing {posts.length} of {allPosts.length} posts
+            </p>
+          )}
+        </>
+      )}
     </Container>
   );
 };
