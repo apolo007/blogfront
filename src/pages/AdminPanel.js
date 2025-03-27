@@ -124,7 +124,7 @@ const AdminPanel = () => {
       setContent('');
       setCategory('');
       setSeoKeywords('');
-      loadData();
+      window.location.reload(); // Reload page after create/update
     } catch (err) {
       console.error(err);
     }

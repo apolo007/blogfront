@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from './styles/GlobalStyle';
 import theme from './styles/theme';
@@ -11,6 +11,20 @@ import AdminPanel from './pages/AdminPanel';
 import PostPage from './pages/PostPage';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Check if user is authenticated on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token); // True if token exists
+  }, []);
+
+  // Protected Route Component
+  const ProtectedRoute = ({ children }) => {
+    const token = localStorage.getItem('token');
+    return token ? children : <Navigate to="/admin/login" />;
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -19,8 +33,15 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/category/:slug" element={<CategoryPage />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin/login" element={<AdminLogin setIsAuthenticated={setIsAuthenticated} />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminPanel />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/post/:slug" element={<PostPage />} />
         </Routes>
       </BrowserRouter>

@@ -28,7 +28,7 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-const AdminLogin = () => {
+const AdminLogin = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -39,6 +39,7 @@ const AdminLogin = () => {
     try {
       const token = await login(email, password);
       localStorage.setItem('token', token);
+      setIsAuthenticated(true); // Update authentication state
       navigate('/admin');
     } catch (err) {
       setError('Login failed');
