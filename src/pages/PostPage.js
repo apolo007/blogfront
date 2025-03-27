@@ -16,13 +16,51 @@ const Container = styled.div`
   padding: 20px;
 `;
 
+const Title = styled.h1`
+  font-size: 2rem;
+  color: ${(props) => props.theme.colors.primary};
+  margin-bottom: 20px;
+`;
+
 const Content = styled.div`
   margin: 20px 0;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: ${(props) => props.theme.colors.text};
+
+  img {
+    display: none; /* Hide any images in content */
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  h2, h3 {
+    margin: 2rem 0 1rem;
+    color: ${(props) => props.theme.colors.primary};
+    font-weight: 600;
+  }
+
+  ul, ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const Img = styled.img`
   max-width: 100%;
-  loading: lazy; /* Lazy load */
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  loading: lazy;
 `;
 
 const Ad = styled.div`
@@ -30,6 +68,7 @@ const Ad = styled.div`
   padding: 20px;
   text-align: center;
   margin: 20px 0;
+  border-radius: 4px;
 `;
 
 const PostPage = () => {
@@ -41,6 +80,7 @@ const PostPage = () => {
     const loadPost = async () => {
       try {
         const postData = await fetchPost(slug);
+        console.log('Post data:', postData); // Debug log
         setPost(postData);
         const commentData = await fetchPostComments(postData._id);
         setComments(commentData);
@@ -76,7 +116,7 @@ const PostPage = () => {
       </Helmet>
       <ProgressBar />
       <Breadcrumbs post={post} />
-      <h1>{post.title}</h1>
+      <Title>{post.title}</Title>
       {post.imageUrl && <Img src={post.imageUrl} alt={post.title} />}
       <Content dangerouslySetInnerHTML={{ __html: post.content }} />
       <LikeButton slug={post.slug} initialLikes={post.likes} />
