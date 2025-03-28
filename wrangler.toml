@@ -1,0 +1,9 @@
+name = "dev"
+type = "javascript"
+account_id = "70b41c5cd940670c3610e878a2fbac4e"
+workers_dev = true
+compatibility_date = "2025-03-28"
+
+[site]
+bucket = "./dist"
+entry-point = "workers-site"
