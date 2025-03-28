@@ -124,7 +124,8 @@ const AdminPanel = () => {
       setContent('');
       setCategory('');
       setSeoKeywords('');
-      window.location.reload(); // Reload page after create/update
+      setLinkSuggestions([]);
+      loadData(); // Refresh posts without reloading the page
     } catch (err) {
       console.error(err);
     }
@@ -136,6 +137,7 @@ const AdminPanel = () => {
     setCategory(post.category);
     setEditSlug(post.slug);
     setSeoKeywords('');
+    setTab('posts'); // Ensure we're on the posts tab
   };
 
   const handleDelete = async (slug) => {

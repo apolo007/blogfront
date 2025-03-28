@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
@@ -33,10 +33,33 @@ const EditorContainer = styled.div`
   }
 `;
 
+const ToggleButton = styled.button`
+  padding: 8px 16px;
+  background: ${(props) => props.theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 10px;
+`;
+
+const RawEditor = styled.textarea`
+  width: 100%;
+  min-height: 300px;
+  padding: 15px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 1rem;
+`;
+
 const PostEditor = ({ content, setContent, token }) => {
   const quillRef = useRef(null);
   const editorRef = useRef(null);
+  const [isRawMode, setIsRawMode] = useState(false);
 
+  // Initialize Quill editor only once
   useEffect(() => {
     if (!editorRef.current) {
       const quill = new Quill(quillRef.current, {
@@ -70,16 +93,14 @@ const PostEditor = ({ content, setContent, token }) => {
               formData.append('image', file);
               const imageUrl = await uploadImage(formData, token);
 
-              // Prompt for alt text
               const altText = window.prompt('Enter alt text for the image:') || 'Image';
 
               const range = quill.getSelection() || { index: quill.getLength() };
               quill.insertEmbed(range.index, 'image', imageUrl);
 
-              // Set alt text after inserting the image
               const imgIndex = range.index;
               quill.formatText(imgIndex, 1, {
-                'alt': altText, // Only set alt attribute
+                'alt': altText,
               });
             } catch (err) {
               console.error('Image upload failed', err);
@@ -90,21 +111,51 @@ const PostEditor = ({ content, setContent, token }) => {
 
       quill.root.innerHTML = content || '';
       quill.on('text-change', () => {
-        console.log('Editor content:', quill.root.innerHTML); // Debug log
+        console.log('Editor content:', quill.root.innerHTML);
         setContent(quill.root.innerHTML);
       });
 
       editorRef.current = quill;
     }
-  }, [token, setContent]);
+  }, [token, setContent]); // Removed isRawMode from dependencies
 
+  // Update Quill content when content prop changes
   useEffect(() => {
-    if (editorRef.current && content !== editorRef.current.root.innerHTML) {
+    if (editorRef.current && content !== editorRef.current.root.innerHTML && !isRawMode) {
       editorRef.current.root.innerHTML = content || '';
     }
-  }, [content]);
+  }, [content, isRawMode]);
 
-  return <EditorContainer><div ref={quillRef} /></EditorContainer>;
+  // Handle raw HTML mode changes
+  const handleRawChange = (e) => {
+    setContent(e.target.value);
+  };
+
+  // Preserve content when switching modes
+  const handleModeSwitch = () => {
+    if (editorRef.current) {
+      const currentContent = isRawMode ? content : editorRef.current.root.innerHTML;
+      setContent(currentContent);
+      setIsRawMode(!isRawMode);
+    }
+  };
+
+  return (
+    <EditorContainer>
+      <ToggleButton onClick={handleModeSwitch}>
+        {isRawMode ? 'Switch to WYSIWYG Editor' : 'Switch to Raw HTML Editor'}
+      </ToggleButton>
+      {isRawMode ? (
+        <RawEditor
+          value={content}
+          onChange={handleRawChange}
+          placeholder="Enter raw HTML here..."
+        />
+      ) : (
+        <div ref={quillRef} />
+      )}
+    </EditorContainer>
+  );
 };
 
 export default PostEditor;
