@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+
+
 // import Subscribe from "./Subscribe";
 
 const FooterWrapper = styled.footer`
@@ -60,10 +62,15 @@ function Footer() {
     <FooterWrapper>
       <FooterContent>
         <Links>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/about">About</NavLink>
-          <NavLink to="/contact">Contact</NavLink>
-          <NavLink to="/privacy">Privacy Policy</NavLink>
+          <NavLink to="/AboutUs">About Us</NavLink>
+          <NavLink to="/ContactExperts">Contact Future's experts</NavLink>
+          <NavLink to="/ContactUs">Contact Us</NavLink>
+          <NavLink to="/TermsAndConditions">Terms and conditions</NavLink>
+          <NavLink to="/PrivacyPolicy">Privacy policy</NavLink>
+          <NavLink to="/CookiesPolicy">Cookies policy</NavLink>
+          <NavLink to="/AdvertiseWithUs">Advertise with us</NavLink>
+          <NavLink to="/AccessibilityStatement">Accessibility Statement</NavLink>
+          <NavLink to="/Careers">Careers</NavLink>
         </Links>
         {/* <Subscribe /> */}
       </FooterContent>

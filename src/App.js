@@ -10,7 +10,15 @@ import CategoryPage from './pages/CategoryPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminPanel from './pages/AdminPanel';
 import PostPage from './pages/PostPage';
-
+import AboutUs from "./pages/AboutUs";
+import AccessibilityStatement from "./pages/AccessibilityStatement";
+import AdvertiseWithUs from "./pages/AdvertiseWithUs";
+import Careers from "./pages/Careers";
+import ContactExperts from "./pages/ContactExperts";
+import ContactUs from "./pages/ContactUs";
+import CookiesPolicy from "./pages/CookiesPolicy";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,6 +44,15 @@ function App() {
           <main style={{ flex: '1 0 auto' }}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/AboutUs" element={<AboutUs />} />
+              <Route path="/AccessibilityStatement" element={<AccessibilityStatement />} />
+              <Route path="/AdvertiseWithUs" element={<AdvertiseWithUs />} />
+              <Route path="/Careers" element={<Careers />} />
+              <Route path="/ContactExperts" element={<ContactExperts />} />
+              <Route path="/ContactUs" element={<ContactUs />} />
+              <Route path="/CookiesPolicy" element={<CookiesPolicy />} />
+              <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
+              <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
               <Route path="/category/:slug" element={<CategoryPage />} />
               <Route path="/admin/login" element={<AdminLogin setIsAuthenticated={setIsAuthenticated} />} />
               <Route
